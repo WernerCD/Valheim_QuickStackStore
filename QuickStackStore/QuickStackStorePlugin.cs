@@ -1,19 +1,38 @@
 ﻿using BepInEx;
 using HarmonyLib;
+using System;
 using System.Reflection;
+using System.Timers;
 using UnityEngine;
 
 namespace QuickStackStore
 {
     [BepInIncompatibility("virtuacode.valheim.trashitems")]
-    [BepInDependency(CompatibilitySupport.azuEPI, BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInDependency(CompatibilitySupport.multiUserChest, BepInDependency.DependencyFlags.SoftDependency)]
+    //[BepInDependency(CompatibilitySupport.azuEPI, BepInDependency.DependencyFlags.SoftDependency)]
+    //[BepInDependency(CompatibilitySupport.multiUserChest, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInPlugin(GUID, NAME, VERSION)]
     public class QuickStackStorePlugin : BaseUnityPlugin
     {
         public const string GUID = "goldenrevolver.quick_stack_store";
         public const string NAME = "Quick Stack - Store - Sort - Trash - Restock";
         public const string VERSION = "1.4.5";
+
+
+        #region StupidTimer
+
+        public System.Timers.Timer _timer;
+
+        private void LoadStupidTimer()
+        {
+            _timer = new System.Timers.Timer();
+            _timer.Elapsed += OnTimedEvent;
+            _timer.Interval = 5000;
+            _timer.Start();
+        }
+        private void OnTimedEvent(object sender, ElapsedEventArgs e)
+            => Logger.LogError($"{nameof(QuickStackStorePlugin)} has ticked ${DateTime.Now:O}");
+
+        #endregion
 
         // intentionally not Awake, so the chainloader is done (for compatibility checks, mostly in the config)
         protected void Start()
